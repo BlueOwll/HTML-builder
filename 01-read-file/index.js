@@ -6,10 +6,16 @@ const txt_path = path.join(__dirname,'text.txt');
 
 const readStream = fs.createReadStream(txt_path, 'utf-8');
 
-let data = '';
+// let data = '';
 
-readStream.on('data', (chunk) => {
+/* readStream.on('data', (chunk) => {
   data += chunk;
   stdout.write(chunk);
+});*/
+
+readStream.pipe(stdout);
+readStream.on('error', () => {
+  console.log('error');
+  process.exit();
 });
-readStream.on('end', () => console.log('End', data));
+// readStream.on('end', () => console.log('End', data));
