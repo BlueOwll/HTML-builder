@@ -13,8 +13,7 @@ const readStream = fs.createReadStream(txt_path, 'utf-8');
   stdout.write(chunk);
 });*/
 
-readStream.pipe(stdout);
-readStream.on('error', () => {
+readStream.pipe(stdout).on('error', () => {
   console.log('error');
   process.exit();
 });
