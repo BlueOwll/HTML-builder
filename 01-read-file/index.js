@@ -17,4 +17,4 @@ readStream.pipe(stdout).on('error', () => {
   console.log('error');
   process.exit();
 });
-// readStream.on('end', () => console.log('End', data));
+

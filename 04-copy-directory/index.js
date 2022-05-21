@@ -5,7 +5,7 @@ const {mkdir, readdir,copyFile, rm} = require('fs/promises');
 
 async function copyDir(src, dest){
   if((typeof src) != 'string'){
-    throw new Error('Wrong dir name');
+    throw new Error('Wrong src dir name');
   }
 
   const srcDirPath = path.join(__dirname,src);
@@ -14,7 +14,7 @@ async function copyDir(src, dest){
 
   let dirList;
   try{
-    console.log('reading dir' +srcDirPath);
+    // console.log('reading dir' +srcDirPath);
     dirList = await readdir(srcDirPath,{withFileTypes:true});
   }catch{
     console.log('there is no dir');
@@ -24,20 +24,21 @@ async function copyDir(src, dest){
   try{
     await rm(destDirPath, {recursive: true});
   }catch(err) {
-    console.log(err);
+    console.log('there is nothing to delete');
   }
 
 
   try{
     await mkdir(destDirPath, {recursive: true});
 
-    for (let str of dirList){
-      console.log(str.name + ' dir? ' + str.isDirectory());
+    for (const str of dirList){
+      //console.log(str.name + ' dir? ' + str.isDirectory());
       if(str.isDirectory()){
         await copyDir(path.join(src, str.name), path.join(dest, str.name));
       } else{
         const srcFilePath = path.join(srcDirPath, str.name);
         const destFilePath = path.join(destDirPath, str.name);
+        console.log('copying file ' + str.name);
         await copyFile(srcFilePath,destFilePath);
       }
     }
