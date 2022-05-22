@@ -23,15 +23,15 @@ async function buildHTML(dirPath){
 
   try{
     let template = await readFile(path.join(__dirname, 'template.html'), {encoding: 'utf8'});
-    console.log(template.match(/{{([A-Za-z0-9-])+}}/gi));
+    //console.log(template.match(/{{([A-Za-z0-9-])+}}/gi));
     for (const templateExp of template.match(/{{([A-Za-z0-9-])+}}/gi) ){
       const compName = templateExp.slice(2,-2);
-      console.log(compName);
+      //console.log(compName);
       try{
         const compContent = await readFile(path.join(__dirname, 'components', compName +'.html'), {encoding: 'utf8'});
         //console.log(compContent);
         template = template.replace(templateExp, compContent);
-        console.log(template);
+        //console.log(template);
       }catch{
         console.log(`there is no component for template ${compName}`);
       }
@@ -63,7 +63,7 @@ async function copyDir(src, dest){
     // console.log('reading dir' +srcDirPath);
     dirList = await readdir(srcDirPath,{withFileTypes:true});
   }catch{
-    console.log('there is no dir');
+    console.log('there is no dir ' + srcDirPath);
     return;
   }
   
@@ -84,19 +84,19 @@ async function copyDir(src, dest){
       } else{
         const srcFilePath = path.join(srcDirPath, str.name);
         const destFilePath = path.join(destDirPath, str.name);
-        console.log('copying file ' + str.name);
+        // console.log('copying file ' + str.name);
         await copyFile(srcFilePath,destFilePath);
       }
     }
-  }catch{
-    console.log('something goes wrong');
+  }catch(e) {
+    console.log('something goes wrong^: '+ e.message);
   }
 }
 
-async function bundleCSS(cssPath, distPath){
+async function bundleCSS(cssPath, distPath, bundleName =  'bundle.css'){
   const cssDirPath = path.join(__dirname, cssPath);
   const destDirPath = path.join(__dirname, distPath);
-  const bundleFilePath = path.join(destDirPath, 'style.css'); 
+  const bundleFilePath = path.join(destDirPath, bundleName); 
 
   let dirList;
 
@@ -134,7 +134,7 @@ async function buildProject(){
   await mkProjectDist('project-dist');
   await buildHTML('project-dist');
   await copyDir('assets', path.join('project-dist','assets'));
-  await bundleCSS('styles','project-dist');
+  await bundleCSS('styles','project-dist', 'style.css');
 }
 
 buildProject();

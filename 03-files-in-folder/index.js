@@ -21,6 +21,7 @@ async function main(){
           const arr = str.split('');
           arr.splice(str.indexOf('.'), 1, ' - ');
           template += arr.join('') ;
+          
         } else {
           template += str;
         }
@@ -30,7 +31,7 @@ async function main(){
       }
     }
   } catch (err) {
-    console.log('Something goes wrong: Error', err);
+    console.log('Something goes wrong: Error', err.message);
     return;
   }
   
