@@ -1,5 +1,5 @@
 
-
+const fs = require('fs');
 const { readdir,open, readFile, rm} = require('fs/promises');
 const path = require('path');
 
@@ -59,4 +59,42 @@ async function bundleCSS(cssPath, distPath) {
   }
 }
 
-bundleCSS('styles','project-dist');
+async function bundleCSSStream(cssPath, distPath){
+  const cssDirPath = path.join(__dirname, cssPath);
+  const destDirPath = path.join(__dirname, distPath);
+  const bundleFilePath = path.join(destDirPath, 'bundle.css'); 
+
+  let dirList;
+
+  try {
+    dirList = await readdir(cssDirPath, { withFileTypes: true });
+  } catch {
+    console.log('there is no dir ' + cssPath);
+    return;
+  }
+
+  try {
+    await readdir(destDirPath);
+  } catch (err) {
+    console.log('there is no dir ' + distPath);
+    return;
+  }
+
+  const writeStr = fs.createWriteStream(bundleFilePath);
+
+  for (const file of dirList){
+    console.log('for ' + file.name + ' ' +  path.extname(file.name).toLowerCase());
+    if ((file.isFile) && (path.extname(file.name).toLowerCase() == '.css')){
+      const cssFilePath = path.join(cssDirPath, file.name);
+      const readStr = fs.createReadStream(cssFilePath);
+      console.log('for css' + cssFilePath);
+      readStr.pipe(writeStr).on('error', () => {
+        console.log('writing error for file ' + file);
+        process.exit();
+      });
+    }
+  }
+}
+
+//bundleCSS('styles','project-dist');
+bundleCSSStream('styles','project-dist');

@@ -1,5 +1,4 @@
 const path = require('path');
-// const fs = require('fs');
 const {mkdir, readdir,copyFile, rm} = require('fs/promises');
 
 
