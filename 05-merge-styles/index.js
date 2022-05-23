@@ -90,11 +90,11 @@ async function bundleCSSStream(cssPath, distPath){
       console.log('for css' + cssFilePath);
       readStr.pipe(writeStr).on('error', () => {
         console.log('writing error for file ' + file);
-        process.exit();
+        return;
       });
     }
   }
 }
 
 //bundleCSS('styles','project-dist');
-bundleCSSStream('styles','project-dist');
+bundleCSSStream('styles','project-dist').catch(()=> console.log('something goes wrong'));

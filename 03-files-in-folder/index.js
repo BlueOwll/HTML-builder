@@ -32,11 +32,8 @@ async function main(){
     }
   } catch (err) {
     console.log('Something goes wrong: Error', err.message);
-    return;
   }
   
-  
-  //for
 }
 
 main();

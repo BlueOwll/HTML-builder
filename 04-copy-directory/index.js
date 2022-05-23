@@ -16,16 +16,16 @@ async function copyDir(src, dest){
     // console.log('reading dir' +srcDirPath);
     dirList = await readdir(srcDirPath,{withFileTypes:true});
   }catch{
-    console.log('there is no dir');
-    return;
+    throw new Error('there is no dir to copy');
   }
 
   try{
-    await rm(destDirPath, {recursive: true});
+    await rm(destDirPath,  {force: true, recursive: true, maxRetries: 10});
   }catch(err) {
-    console.log('there is nothing to delete');
+    console.log(destDirPath);
+    throw new Error('It is impossible to clear dist dir, please close Live Server and try again');
   }
-
+  //console.log('go on ' + destDirPath);
 
   try{
     await mkdir(destDirPath, {recursive: true});
@@ -41,9 +41,10 @@ async function copyDir(src, dest){
         await copyFile(srcFilePath,destFilePath);
       }
     }
-  }catch{
-    console.log('something goes wrong');
+  }catch (e) {
+    throw new Error('Copy error: '+ e.message);
   }
 }
-copyDir('files','files-copy');
+
+copyDir('files','files-copy').catch(err => console.log('Something goes wrong: ' + err.message));
 
