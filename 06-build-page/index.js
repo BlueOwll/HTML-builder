@@ -5,7 +5,7 @@ const path = require('path');
 async function mkProjectDist(dirPath){
   const distPath = path.join(__dirname,dirPath);
   try{
-    await rm(distPath,  {recursive: true, maxRetries: 10});
+    await rm(distPath,  {force: true, recursive: true, maxRetries: 10});
   }catch{
     throw new Error('It is impossible to clear dist dir, please close Live Server and try again');
   }
